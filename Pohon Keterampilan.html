@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pohon Keterampilan - Platform Belajar Sekolah & Skill Masa Depan</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f8fafc;
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-emerald-500 selection:text-white min-h-screen flex flex-col font-sans">
+
+  <!-- NAVBAR / HEADER -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Logo & Navigation -->
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('dashboard')">
+            <div class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-md shadow-emerald-200">
+              <i data-lucide="sprout" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h1 class="text-lg font-extrabold text-slate-900 tracking-tight leading-none font-sans">Pohon Keterampilan</h1>
+              <p class="text-xs text-slate-500 font-medium font-sans">Platform Belajar Sekolah & Skill Masa Depan</p>
+            </div>
+          </div>
+
+          <!-- Nav Links -->
+          <nav class="hidden md:flex items-center gap-2">
+            <button onclick="switchView('dashboard')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-100 transition font-sans">
+              Dashboard
+            </button>
+            <button onclick="openAboutModal()" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-100 transition flex items-center gap-1 font-sans">
+              <i data-lucide="info" class="w-3.5 h-3.5 text-emerald-600"></i>
+              <span>Tentang Kami</span>
+            </button>
+          </nav>
+        </div>
+
+        <!-- User Stats, Grade Selector & Auth Actions -->
+        <div class="flex items-center gap-2 sm:gap-3 font-sans">
+          <!-- Active Grade Selector Badge -->
+          <button onclick="openGradeModal()" title="Ubah Akses Jenjang Belajar" class="flex items-center gap-1.5 bg-indigo-50 text-indigo-700 border border-indigo-200 px-3 py-1.5 rounded-full text-xs font-bold hover:bg-indigo-100 transition tracking-tight">
+            <i data-lucide="layers" class="w-3.5 h-3.5 text-indigo-600"></i>
+            <span id="activeGradeBadgeLabel" class="font-bold">Akses: Belum Dipilih</span>
+            <i data-lucide="chevron-down" class="w-3 h-3 text-indigo-400"></i>
+          </button>
+
+          <!-- User Status & Auth Buttons -->
+          <div id="userAuthSection" class="flex items-center gap-2 font-sans">
+            <!-- Dynamic via JS -->
+          </div>
+
+          <!-- XP Badge -->
+          <div class="flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1.5 rounded-full font-bold text-xs sm:text-sm">
+            <i data-lucide="zap" class="w-4 h-4 text-amber-500 fill-amber-500"></i>
+            <span id="userXP" class="font-extrabold">0 XP</span>
+          </div>
+
+          <!-- Level Badge -->
+          <div class="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-full font-bold text-xs sm:text-sm">
+            <span id="userLevelBadge" class="font-bold">1 Pemula</span>
+          </div>
+
+          <!-- Reset Button -->
+          <button onclick="resetProgress()" title="Reset Progres Belajar" class="p-2 text-slate-400 hover:text-rose-600 rounded-full hover:bg-rose-50 transition">
+            <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- VIEW 1: DASHBOARD -->
+    <div id="viewDashboard" class="space-y-6">
+      
+      <!-- WELCOME HERO BANNER -->
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-800 p-6 sm:p-10 text-white shadow-xl">
+        <div class="relative z-10 max-w-2xl space-y-4">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/30 border border-emerald-300/30 backdrop-blur-md text-xs font-semibold text-emerald-100">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-300"></i>
+            <span>Integrasi Kurikulum Merdeka, IB & Skill Masa Depan</span>
+          </div>
+          
+          <!-- Dynamic Welcome Message -->
+          <h2 id="welcomeHeading" class="text-2xl sm:text-4xl font-black tracking-tight leading-tight">
+            Selamat Datang di Pohon Keterampilan!
+          </h2>
+          <p id="welcomeSubtext" class="text-sm sm:text-base text-emerald-100/90 leading-relaxed">
+            Silakan pilih jenjang pendidikanmu untuk mulai mengakses modul interaktif dan kuis 50 soal yang bervariasi!
+          </p>
+        </div>
+
+        <div class="absolute -right-8 -bottom-10 opacity-15 text-white pointer-events-none">
+          <i data-lucide="trees" class="w-80 h-80"></i>
+        </div>
+      </div>
+
+      <!-- ACCESS STATUS WARNING (IF RESTRICTED) -->
+      <div id="restrictionNotice" class="hidden bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center justify-between gap-3 text-amber-800 text-xs sm:text-sm font-medium">
+        <div class="flex items-center gap-2.5">
+          <i data-lucide="lock" class="w-5 h-5 text-amber-600 shrink-0"></i>
+          <span id="restrictionNoticeText">Akses kamu terbatasi hanya untuk jenjang SD.</span>
+        </div>
+        <button onclick="openGradeModal()" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition shrink-0">
+          Ubah Jenjang
+        </button>
+      </div>
+
+      <!-- CONTACT & LOCATION INFO BANNER -->
+      <div class="bg-gradient-to-r from-teal-50 to-emerald-50 p-4 sm:p-5 rounded-2xl border border-emerald-200/80 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-md">
+            <i data-lucide="map-pin" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-slate-900 text-sm">Pusat Layanan & Pembelajaran Pohon Keterampilan</h4>
+            <p class="text-xs text-slate-600">Pusat Operasional: <span class="font-bold text-emerald-800">Sidoarjo, Jawa Timur</span> | Hubungi Bantuan & Info Kurikulum</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 w-full md:w-auto">
+          <button onclick="openAboutModal()" class="w-full md:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition shadow-sm">
+            <i data-lucide="info" class="w-4 h-4"></i>
+            <span>Tentang Kami</span>
+          </button>
+          <button onclick="openFeedbackModal()" class="w-full md:w-auto px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition shadow-sm">
+            <i data-lucide="message-square-plus" class="w-4 h-4"></i>
+            <span>Saran & Pesan</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- FILTER & SEARCH BAR -->
+      <div class="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center gap-2" id="categoryTabContainer">
+            <!-- Dynamic JS Tabs -->
+          </div>
+
+          <div class="relative w-full sm:w-72">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Cari materi, kuis, atau skill..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
+          </div>
+        </div>
+
+        <div id="subCategoryTabContainer" class="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100">
+          <!-- Dynamic Class Buttons -->
+        </div>
+      </div>
+
+      <!-- SECTION TITLE & PROGRESS -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div>
+          <h3 id="sectionTitle" class="text-xl font-bold text-slate-900">Sekolah Dasar (SD) - Kelas 1</h3>
+          <p id="sectionSubtitle" class="text-xs sm:text-sm text-slate-500">Selesaikan modul materi dan kuis 50 soal (5 Ronde) untuk menumbuhkan cabang keterampilanmu.</p>
+        </div>
+        <div class="flex items-center gap-3 bg-white px-4 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 shadow-sm">
+          <span>Progres Tingkat:</span>
+          <div class="w-28 bg-slate-100 h-2.5 rounded-full overflow-hidden">
+            <div id="levelProgressBar" class="bg-emerald-500 h-full w-0 transition-all duration-300"></div>
+          </div>
+          <span id="levelProgressText" class="text-emerald-600 font-bold">0%</span>
+        </div>
+      </div>
+
+      <!-- MODULE CARDS GRID -->
+      <div id="moduleGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Module cards populated via JavaScript -->
+      </div>
+
+      <!-- FEEDBACK HISTORY LIST SECTION -->
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div class="flex items-center gap-2">
+            <i data-lucide="message-square" class="w-5 h-5 text-emerald-600"></i>
+            <h4 class="font-bold text-slate-900 text-sm">Masukan & Saran Komunitas</h4>
+          </div>
+          <button onclick="openFeedbackModal()" class="text-xs font-bold text-emerald-600 hover:underline flex items-center gap-1">
+            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+            <span>Tulis Saran Kamu</span>
+          </button>
+        </div>
+        <div id="feedbackHistoryList" class="space-y-3">
+          <!-- Feedback items inserted via JS -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- VIEW 2: MATERIAL READING & QUIZ LAUNCHER -->
+    <div id="viewMaterial" class="hidden space-y-6">
+      <button onclick="switchView('dashboard')" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-emerald-600 transition">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span>Kembali ke Dashboard</span>
+      </button>
+
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-8">
+        <div class="border-b border-slate-100 pb-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span id="matCategoryBadge" class="px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold rounded-full">
+              SD Kelas 1
+            </span>
+            <span id="matXPBadge" class="px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 text-xs font-bold rounded-full flex items-center gap-1">
+              <i data-lucide="zap" class="w-3.5 h-3.5 fill-amber-500"></i> +250 XP
+            </span>
+          </div>
+          <h2 id="matTitle" class="text-2xl sm:text-3xl font-extrabold text-slate-900">Judul Modul</h2>
+          <p id="matDesc" class="text-slate-600 text-sm sm:text-base leading-relaxed">Deskripsi Modul</p>
+        </div>
+
+        <div id="matBody" class="prose prose-emerald max-w-none text-slate-700 space-y-4 text-sm sm:text-base">
+          <!-- Dynamic Content -->
+        </div>
+
+        <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 bg-emerald-50/50 p-6 rounded-2xl border border-emerald-100">
+          <div>
+            <h4 class="font-bold text-slate-900">Siap Uji Pemahamanmu? (50 Soal - 5 Ronde)</h4>
+            <p class="text-xs sm:text-sm text-slate-600">Selesaikan kuis beronde untuk mendapatkan XP dan menaikkan levelmu!</p>
+          </div>
+          <button id="startQuizBtn" onclick="startQuizForCurrentModule()" class="w-full sm:w-auto px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 transition">
+            <i data-lucide="play-circle" class="w-5 h-5"></i>
+            <span>Mulai Kuis 5 Ronde</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 3: INTERACTIVE QUIZ ENGINE -->
+    <div id="viewQuiz" class="hidden max-w-3xl mx-auto space-y-6">
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+        <button onclick="confirmExitQuiz()" class="text-slate-400 hover:text-rose-600 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <div class="flex items-center gap-2">
+          <span id="quizRoundBadge" class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold text-xs">Ronde 1</span>
+          <span class="text-slate-400 text-xs">|</span>
+          <span id="quizQuestionCount" class="text-xs font-semibold text-slate-600">Soal 1 dari 10</span>
+        </div>
+        <div class="flex items-center gap-1 text-amber-600 font-bold text-xs">
+          <i data-lucide="zap" class="w-4 h-4 fill-amber-500"></i>
+          <span id="quizPotentialXP">+50 XP</span>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+        <div class="space-y-2">
+          <span id="quizCategoryLabel" class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Mata Pelajaran</span>
+          <h3 id="quizQuestionText" class="text-lg sm:text-xl font-bold text-slate-900 leading-snug">Pertanyaan Kuis</h3>
+        </div>
+
+        <div id="quizOptionsContainer" class="space-y-3">
+          <!-- Dynamic Option Buttons -->
+        </div>
+
+        <div id="quizFeedbackBox" class="hidden p-4 rounded-2xl border space-y-2">
+          <div class="flex items-center gap-2 font-bold text-sm" id="quizFeedbackHeader"></div>
+          <p id="quizExplanationText" class="text-xs sm:text-sm leading-relaxed"></p>
+        </div>
+
+        <div class="pt-2 flex justify-end">
+          <button id="quizNextBtn" disabled onclick="handleQuizNext()" class="w-full sm:w-auto px-6 py-3 bg-slate-300 text-slate-500 cursor-not-allowed font-bold text-sm rounded-xl flex items-center justify-center gap-2 transition">
+            <span>Selanjutnya</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 4: QUIZ ROUND SUMMARY -->
+    <div id="viewSummary" class="hidden max-w-xl mx-auto space-y-6 text-center py-10">
+      <div class="bg-white rounded-3xl border border-slate-200 p-8 shadow-xl space-y-6">
+        <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-3xl mx-auto flex items-center justify-center shadow-inner">
+          <i data-lucide="trophy" class="w-10 h-10"></i>
+        </div>
+
+        <div class="space-y-2">
+          <h3 class="text-2xl font-black text-slate-900">Ronde Selesai!</h3>
+          <p class="text-sm text-slate-500">Hebat! Kamu telah menyelesaikan ronde kuis ini.</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+          <div class="space-y-1">
+            <p class="text-xs text-slate-400 font-semibold">Skor Akhir Ronde</p>
+            <p id="summaryScore" class="text-2xl font-black text-emerald-600">100%</p>
+          </div>
+          <div class="space-y-1">
+            <p class="text-xs text-slate-400 font-semibold">XP Didapat</p>
+            <p id="summaryXPGained" class="text-2xl font-black text-amber-500">+50 XP</p>
+          </div>
+        </div>
+
+        <div class="pt-4 space-y-3">
+          <button id="nextRoundBtn" onclick="startNextRoundOrFinish()" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-2">
+            <span>Lanjut Ronde Berikutnya</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+          <button onclick="switchView('dashboard')" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm rounded-xl transition">
+            Kembali ke Dashboard
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL 0: PILIHAN JENJANG (GRADE RESTRICTION SELECTION) -->
+  <div id="gradeModal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 relative space-y-6">
+      
+      <div class="text-center space-y-2">
+        <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl mx-auto flex items-center justify-center">
+          <i data-lucide="graduation-cap" class="w-8 h-8"></i>
+        </div>
+        <h3 class="text-2xl font-black text-slate-900 font-sans">Pilih Jenjang Belajar Anda</h3>
+        <p class="text-xs sm:text-sm text-slate-500 font-sans">Pilih tingkat pendidikan Anda untuk mempersonalisasi materi dan kuis.</p>
+      </div>
+
+      <!-- Grade Options Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 font-sans">
+        
+        <!-- SD Button -->
+        <button onclick="setStudentGrade('sd')" class="p-4 rounded-2xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/50 text-left transition space-y-1 group">
+          <div class="flex items-center justify-between">
+            <span class="font-extrabold text-slate-900 group-hover:text-emerald-700">Sekolah Dasar (SD)</span>
+            <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">Akses SD Sahaja</span>
+          </div>
+          <p class="text-xs text-slate-500">Akses dibatasi hanya untuk materi & kuis SD Kelas 1–6.</p>
+        </button>
+
+        <!-- SMP Button (Menampilkan Akses SD + SMP) -->
+        <button onclick="setStudentGrade('smp')" class="p-4 rounded-2xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/50 text-left transition space-y-1 group">
+          <div class="flex items-center justify-between">
+            <span class="font-extrabold text-slate-900 group-hover:text-emerald-700">Sekolah Menengah Pertama (SMP)</span>
+            <span class="text-[10px] bg-indigo-100 text-indigo-800 font-bold px-2 py-0.5 rounded-full">Akses SD & SMP</span>
+          </div>
+          <p class="text-xs text-slate-500">Akses untuk materi & kuis SD (Kelas 1–6) dan SMP (Kelas 7–9).</p>
+        </button>
+
+        <!-- SMA Button (Exception: Unlocks All) -->
+        <button onclick="setStudentGrade('sma')" class="px-4 py-2 rounded-2xl border-2 border-indigo-200 bg-indigo-50/30 hover:border-indigo-500 hover:bg-indigo-50 text-left transition space-y-1 group">
+          <div class="flex items-center justify-between">
+            <span class="font-extrabold text-indigo-950">SMA (Sekolah Menengah Atas)</span>
+            <span class="text-[10px] bg-indigo-600 text-white font-bold px-2 py-0.5 rounded-full inline-flex flex-col items-center">
+  <span class="whitespace-nowrap">Buka Semua</span>
+  <span class="whitespace-nowrap">Akses</span>
+</span>
+          </div>
+          <p class="text-xs text-indigo-800/80">Pengecualian: Bebas mengakses SD, SMP, SMA, SMK, IB, & Skill.</p>
+        </button>
+
+        <!-- SMK Button (Exception: Unlocks All) -->
+        <button onclick="setStudentGrade('smk')" class="p-4 rounded-2xl border-2 border-indigo-200 bg-indigo-50/30 hover:border-indigo-500 hover:bg-indigo-50 text-left transition space-y-1 group">
+          <div class="flex items-center justify-between">
+            <span class="font-extrabold text-indigo-950">SMK (Kejuruan)</span>
+            <span class="text-[10px] bg-indigo-600 text-white font-bold px-2 py-0.5 rounded-full">Buka Semua Akses</span>
+          </div>
+          <p class="text-xs text-indigo-800/80">Pengecualian: Akses penuh ke seluruh materi sekolah & skill vokasi.</p>
+        </button>
+
+        <!-- IB World Button (Exception: Unlocks All) -->
+        <button onclick="setStudentGrade('ib')" class="p-4 rounded-2xl border-2 border-indigo-200 bg-indigo-50/30 hover:border-indigo-500 hover:bg-indigo-50 text-left transition space-y-1 group">
+          <div class="flex items-center justify-between">
+            <span class="font-extrabold text-indigo-950">Kurikulum IB</span>
+            <span class="text-[10px] bg-indigo-600 text-white font-bold px-2 py-0.5 rounded-full">Buka Semua Akses</span>
+          </div>
+          <p class="text-xs text-indigo-800/80">Pengecualian: Akses penuh ke kurikulum internasional IB & sekolah.</p>
+        </button>
+
+        <!-- UMUM / SKILL Button (Exception: Unlocks All) -->
+        <button onclick="setStudentGrade('umum')" class="p-4 rounded-2xl border-2 border-emerald-300 bg-emerald-50 hover:border-emerald-600 hover:bg-emerald-100/60 text-left transition space-y-1 group">
+          <div class="flex items-center justify-between">
+            <span class="font-extrabold text-emerald-950">Umum & Profesional</span>
+            <span class="text-[10px] bg-emerald-700 text-white font-bold px-2 py-0.5 rounded-full">Buka Semua Akses</span>
+          </div>
+          <p class="text-xs text-emerald-800/80">Pengecualian: Bebas mempelajari semua skill bisnis & pelajaran sekolah.</p>
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 1: AUTH (LOGIN & REGISTRATION) -->
+  <div id="authModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 relative space-y-6 font-sans">
+      <button onclick="closeAuthModal()" class="absolute right-5 top-5 text-slate-400 hover:text-slate-600">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <!-- Auth Tabs -->
+      <div class="flex border-b border-slate-200 text-sm font-bold">
+        <button id="tabAuthLogin" onclick="switchAuthTab('login')" class="flex-1 pb-3 text-emerald-600 border-b-2 border-emerald-600">Masuk</button>
+        <button id="tabAuthRegister" onclick="switchAuthTab('register')" class="flex-1 pb-3 text-slate-400 border-b-2 border-transparent hover:text-slate-600">Daftar Akun</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="formLogin" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Email / Username</label>
+          <input type="email" id="loginEmail" required placeholder="nama@email.com" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Kata Sandi</label>
+          <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
+        </div>
+        <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2">
+          <i data-lucide="log-in" class="w-4 h-4"></i>
+          <span>Masuk Sekarang</span>
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="formRegister" onsubmit="handleRegisterSubmit(event)" class="hidden space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap</label>
+          <input type="text" id="regName" required placeholder="Budi Santoso" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Email</label>
+          <input type="email" id="regEmail" required placeholder="nama@email.com" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Sekolah / Instansi</label>
+          <input type="text" id="regSchool" placeholder="SDN 1 Sidoarjo / Umum" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Kata Sandi</label>
+          <input type="password" id="regPassword" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
+        </div>
+        <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2">
+          <i data-lucide="user-plus" class="w-4 h-4"></i>
+          <span>Buat Akun Baru</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: SARAN & PESAN (FEEDBACK FORM) -->
+  <div id="feedbackModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 font-sans">
+    <div class="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 relative space-y-5">
+      <button onclick="closeFeedbackModal()" class="absolute right-5 top-5 text-slate-400 hover:text-slate-600">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="space-y-1">
+        <h3 class="text-xl font-black text-slate-900 flex items-center gap-2">
+          <i data-lucide="message-square-plus" class="w-5 h-5 text-amber-500"></i>
+          <span>Kirim Saran & Pesan</span>
+        </h3>
+        <p class="text-xs text-slate-500">Bantu kami memperbarui materi & fitur platform Pohon Keterampilan.</p>
+      </div>
+
+      <form onsubmit="handleFeedbackSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nama Pengirim</label>
+          <input type="text" id="fbName" required placeholder="Nama Anda" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Kategori Masukan</label>
+          <select id="fbCategory" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
+            <option value="Kurikulum & Materi">Materi & Kurikulum Sekolah</option>
+            <option value="Kuis & Soal">Soal & Kuis Beronde</option>
+            <option value="Fitur Website">Fitur & Tampilan Platform</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nilai Kepuasan (Rating 1 - 5)</label>
+          <div class="flex items-center gap-3" id="ratingStarContainer">
+            <button type="button" onclick="setRating(1)" class="star-btn text-amber-400"><i data-lucide="star" class="w-6 h-6 fill-amber-400"></i></button>
+            <button type="button" onclick="setRating(2)" class="star-btn text-amber-400"><i data-lucide="star" class="w-6 h-6 fill-amber-400"></i></button>
+            <button type="button" onclick="setRating(3)" class="star-btn text-amber-400"><i data-lucide="star" class="w-6 h-6 fill-amber-400"></i></button>
+            <button type="button" onclick="setRating(4)" class="star-btn text-amber-400"><i data-lucide="star" class="w-6 h-6 fill-amber-400"></i></button>
+            <button type="button" onclick="setRating(5)" class="star-btn text-amber-400"><i data-lucide="star" class="w-6 h-6 fill-amber-400"></i></button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Pesan / Saran Detail</label>
+          <textarea id="fbMessage" rows="3" required placeholder="Tuliskan ide, kritik, atau modul tambahan yang kamu inginkan..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2">
+          <i data-lucide="send" class="w-4 h-4"></i>
+          <span>Kirim Masukan</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 3: TENTANG KAMI (ABOUT US) -->
+  <div id="aboutModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 font-sans">
+    <div class="bg-white w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 relative space-y-6 max-h-[90vh] overflow-y-auto">
+      <button onclick="closeAboutModal()" class="absolute right-5 top-5 text-slate-400 hover:text-slate-600">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shadow-lg shadow-emerald-200 shrink-0">
+          <i data-lucide="sprout" class="w-7 h-7"></i>
+        </div>
+        <div>
+          <h3 class="text-2xl font-black text-slate-900">Tentang Pohon Keterampilan</h3>
+          <p class="text-xs text-slate-500">Platform Pembelajaran Gamifikasi Sekolah & Keterampilan Praktis</p>
+        </div>
+      </div>
+
+      <div class="space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
+        <p>
+          <strong class="text-slate-900">Pohon Keterampilan</strong> adalah platform pendidikan interaktif yang menggabungkan Kurikulum Sekolah Nasional (Kurikulum Merdeka SD-SMA/SMK), Kurikulum Internasional (IB World), serta Keterampilan Praktis Masa Depan (AI, Digital Marketing, Keuangan) dalam satu ekosistem terpadu.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          <div class="p-4 bg-emerald-50/60 rounded-2xl border border-emerald-100 space-y-1">
+            <h5 class="font-bold text-emerald-900 text-sm flex items-center gap-1.5">
+              <i data-lucide="target" class="w-4 h-4 text-emerald-600"></i>
+              Misi Utama
+            </h5>
+            <p class="text-xs text-emerald-800">Menyediakan akses belajar yang terstruktur, menyenangkan, dan adaptif untuk seluruh jenjang pendidikan di Indonesia.</p>
+          </div>
+
+          <div class="p-4 bg-indigo-50/60 rounded-2xl border border-indigo-100 space-y-1">
+            <h5 class="font-bold text-indigo-900 text-sm flex items-center gap-1.5">
+              <i data-lucide="zap" class="w-4 h-4 text-indigo-600"></i>
+              Sistem Kuis 5 Ronde
+            </h5>
+            <p class="text-xs text-indigo-800">Setiap materi dilengkapi 50 soal latihan beragam yang dibagi menjadi 5 ronde interaktif untuk menguji pemahaman.</p>
+          </div>
+        </div>
+
+        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2">
+          <h5 class="font-bold text-slate-900 text-xs uppercase tracking-wider">Pusat Layanan & Kontak</h5>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            <div class="flex items-center gap-2">
+              <i data-lucide="map-pin" class="w-4 h-4 text-emerald-600"></i>
+              <span>Sidoarjo, Jawa Timur, Indonesia</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="phone-call" class="w-4 h-4 text-emerald-600"></i>
+              <a href="https://wa.me/6287758933574" target="_blank" class="text-emerald-700 font-bold hover:underline">087758933574</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-2 flex justify-end">
+        <button onclick="closeAboutModal()" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition">
+          Tutup Informasi
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING BUTTONS -->
+  <div class="fixed bottom-6 right-6 z-30 flex flex-col items-end gap-3 font-sans">
+    <button onclick="openAboutModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white p-3.5 rounded-full shadow-lg shadow-indigo-500/30 transition flex items-center gap-2 group">
+      <i data-lucide="info" class="w-5 h-5"></i>
+      <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 whitespace-nowrap text-xs font-bold">Tentang Kami</span>
+    </button>
+    <button onclick="openFeedbackModal()" class="bg-amber-500 hover:bg-amber-600 text-white p-3.5 rounded-full shadow-lg shadow-amber-500/30 transition flex items-center gap-2 group">
+      <i data-lucide="message-square-plus" class="w-5 h-5"></i>
+      <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 whitespace-nowrap text-xs font-bold">Kirim Saran</span>
+    </button>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-slate-200 py-8 mt-auto font-sans">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-500 space-y-2">
+      <p class="font-bold text-slate-700">&copy; 2026 Pohon Keterampilan. Platform Belajar Kurikulum Sekolah & Skill Masa Depan.</p>
+      <p>Pusat Operasional: <span class="font-semibold text-emerald-700">Sidoarjo, Jawa Timur</span> | Narahubung: <a href="https://wa.me/6287758933574" class="font-semibold text-emerald-700 underline">087758933574</a></p>
+    </div>
+  </footer>
+
+  <!-- DATA & LOGIC SCRIPT -->
+  <script>
+    /* ==========================================================================
+       1. DATA & DIVERIFIED QUESTION GENERATOR (MAPEL-SPECIFIC)
+       ========================================================================== */
+    const APP_DATA = {
+      categories: [
+        { id: 'sd', name: 'SD', icon: 'book-open' },
+        { id: 'smp', name: 'SMP', icon: 'graduation-cap' },
+        { id: 'sma', name: 'SMA', icon: 'award' },
+        { id: 'smk', name: 'SMK', icon: 'wrench' },
+        { id: 'ib', name: 'Kurikulum IB', icon: 'globe' },
+        { id: 'skill', name: 'Skill Kehidupan & Bisnis', icon: 'briefcase', isHighlight: true }
+      ],
+
+      subCategories: {
+        sd: ['Kelas 1', 'Kelas 2', 'Kelas 3', 'Kelas 4', 'Kelas 5', 'Kelas 6'],
+        smp: ['Kelas 7', 'Kelas 8', 'Kelas 9'],
+        sma: ['Kelas 10', 'Kelas 11', 'Kelas 12'],
+        smk: ['RPL & Software', 'TKJ & Jaringan', 'Bisnis Digital', 'DKV'],
+        ib: ['IB PYP (Primary)', 'IB MYP (Middle)', 'IB DP (Diploma)'],
+        skill: ['Pemrograman & AI', 'Digital Marketing', 'Keuangan & Bisnis']
+      },
+
+      modules: []
+    };
+
+    // Bank Soal Berdasarkan Kategori & Mata Pelajaran Spesifik
+    const SUBJECT_QUESTION_BANK = {
+      'Matematika': [
+        { q: "Berapakah hasil dari 15 + 27?", opts: ["42", "38", "40", "45"], ans: 0, exp: "15 + 27 = 42." },
+        { q: "Hasil dari 8 x 7 adalah...", opts: ["54", "56", "64", "48"], ans: 1, exp: "8 dikalikan 7 sama dengan 56." },
+        { q: "Manakah yang merupakan bilangan genap?", opts: ["13", "21", "28", "35"], ans: 2, exp: "28 dapat dibagi habis oleh 2, sehingga merupakan bilangan genap." },
+        { q: "Sebuah persegi memiliki sisi 6 cm. Berapa luasnya?", opts: ["24 cm²", "36 cm²", "12 cm²", "18 cm²"], ans: 1, exp: "Luas persegi = sisi x sisi = 6 x 6 = 36 cm²." },
+        { q: "Pecahan sederhana dari 4/8 adalah...", opts: ["1/2", "1/4", "3/4", "2/3"], ans: 0, exp: "4/8 dibagi 4 pada pembilang dan penyebut menjadi 1/2." },
+        { q: "Hasil pengurangan dari 100 - 45 adalah...", opts: ["55", "65", "45", "50"], ans: 0, exp: "100 - 45 = 55." },
+        { q: "Berapa keliling persegi panjang dengan panjang 8 cm dan lebar 4 cm?", opts: ["24 cm", "32 cm", "12 cm", "16 cm"], ans: 0, exp: "Keliling = 2 x (p + l) = 2 x (8 + 4) = 24 cm." },
+        { q: "Bentuk desimal dari 3/4 adalah...", opts: ["0.25", "0.50", "0.75", "0.80"], ans: 2, exp: "3 dibagi 4 adalah 0,75." },
+        { q: "Jika x + 5 = 12, maka nilai x adalah...", opts: ["6", "7", "8", "9"], ans: 1, exp: "x = 12 - 5 = 7." },
+        { q: "Berapa hasil dari 5² (5 pangkat 2)?", opts: ["10", "15", "25", "20"], ans: 2, exp: "5² = 5 x 5 = 25." }
+      ],
+
+      'Bahasa Indonesia': [
+        { q: "Manakah yang merupakan contoh kata kerja (verba)?", opts: ["Membaca", "Buku", "Meja", "Pena"], ans: 0, exp: "'Membaca' merupakan tindakan atau aktivitas sehingga termasuk kata kerja." },
+        { q: "Kalimat utama yang memuat ide pokok dalam paragraf dinamakan...", opts: ["Kalimat penjelas", "Kalimat utama", "Kalimat penghubung", "Kalimat penutup"], ans: 1, exp: "Kalimat utama berisi gagasan dasar atau ide pokok paragraf." },
+        { q: "Sinonim dari kata 'Pintar' adalah...", opts: ["Cerdas", "Malas", "Lambat", "Ceroboh"], ans: 0, exp: "'Cerdas' memiliki makna yang sama dengan 'Pintar'." },
+        { q: "Antonim dari kata 'Besar' adalah...", opts: ["Tinggi", "Kecil", "Luas", "Panjang"], ans: 1, exp: "Lawan kata (antonim) dari besar adalah kecil." },
+        { q: "Tanda baca yang digunakan di akhir kalimat berita adalah...", opts: ["Tanda tanya (?)", "Tanda seru (!)", "Tanda titik (.)", "Tanda koma (,)"], ans: 2, exp: "Tanda titik (.) digunakan untuk mengakhiri kalimat berita." },
+        { q: "Latar tempat dalam cerita pendek menjelaskan...", opts: ["Waktu kejadian", "Lokasi terjadinya peristiwa", "Suasana cerita", "Tokoh utama"], ans: 1, exp: "Latar tempat merujuk pada lokasi di mana cerita berlangsung." },
+        { q: "Penggunaan huruf kapital yang benar terdapat pada...", opts: ["ibu pergi ke jakarta", "Ibu pergi ke Jakarta", "ibu pergi ke Jakarta", "Ibu pergi ke jakarta"], ans: 1, exp: "Awal kalimat dan nama kota (Jakarta) wajib menggunakan huruf kapital." },
+        { q: "Puisi lama yang terdiri dari 4 baris dengan sajak a-b-a-b disebut...", opts: ["Pantun", "Gurindam", "Syair", "Novel"], ans: 0, exp: "Pantun identik dengan susunan 4 baris bersajak a-b-a-b." },
+        { q: "Kata sapaan yang sopan kepada orang tua adalah...", opts: ["Kamu", "Bapak/Ibu", "Dia", "Kalian"], ans: 1, exp: "Kata 'Bapak/Ibu' menunjukkan rasa hormat kepada orang tua." },
+        { q: "Unsur intrinsik cerita yang berisi pesan moral dinamakan...", opts: ["Tema", "Amanat", "Plot", "Latar"], ans: 1, exp: "Amanat adalah pesan moral atau nasihat yang ingin disampaikan pengarang." }
+      ],
+
+      'IPAS (IPA & IPS)': [
+        { q: "Tumbuhan hijau membuat makanannya sendiri melalui proses...", opts: ["Respirasi", "Fotosintesis", "Transpirasi", "Adaptasi"], ans: 1, exp: "Fotosintesis adalah proses tumbuhan hijau memasak makanan dengan bantuan cahaya matahari." },
+        { q: "Hewan pemakan tumbuhan dinamakan...", opts: ["Karnivora", "Herbivora", "Omnivora", "Insektivora"], ans: 1, exp: "Herbivora adalah kelompok hewan yang mengonsumsi tumbuh-tumbuhan." },
+        { q: "Cahaya matahari, air, dan tanah termasuk komponen ekosistem...", opts: ["Biotik", "Abiotik", "Organik", "Sintetis"], ans: 1, exp: "Komponen abiotik terdiri dari unsur non-makhluk hidup seperti air, tanah, dan cahaya." },
+        { q: "Simbol warna biru pada peta geografis menunjukkan wilayah...", opts: ["Pegunungan", "Perairan / Laut", "Dataran tinggi", "Hutan"], ans: 1, exp: "Warna biru pada peta melambangkan area perairan seperti laut, sungai, dan danau." },
+        { q: "Perubahan wujud benda cair menjadi gas disebut...", opts: ["Membeku", "Menguap", "Mencair", "Mengembun"], ans: 1, exp: "Menguap adalah proses perubahan benda dari cair menjadi gas akibat pemanasan." },
+        { q: "Candi Borobudur merupakan peninggalan bersejarah dari kerajaan bercorak...", opts: ["Hindu", "Buddha", "Islam", "Konghucu"], ans: 1, exp: "Candi Borobudur dibangun pada masa kerajaan Buddha Syailendra." },
+        { q: "Bagian tubuh manusia yang berfungsi memompa darah ke seluruh tubuh adalah...", opts: ["Paru-paru", "Jantung", "Hati", "Lambung"], ans: 1, exp: "Jantung bertugas memompa darah kaya oksigen ke seluruh tubuh." },
+        { q: "Dua kutub magnet yang senama jika didekatkan akan...", opts: ["Tarik-menarik", "Tolak-menolak", "Menempel", "Tidak bereaksi"], ans: 1, exp: "Kutub magnet yang senama (sejenis) akan saling menolak." },
+        { q: "Pancasila terdiri dari berapa sila?", opts: ["4 Sila", "5 Sila", "6 Sila", "3 Sila"], ans: 1, exp: "Dasar negara Indonesia adalah Pancasila yang terdiri dari 5 sila." },
+        { q: "Alat musik tradisional Angklung berasal dari daerah...", opts: ["Jawa Tengah", "Jawa Barat", "Jawa Timur", "Bali"], ans: 1, exp: "Angklung terbuat dari bambu dan merupakan alat musik khas Jawa Barat." }
+      ]
+    };
+
+    // Helper Generator Soal Variatif & Beragam Sesuai Mapel (5 Ronde x 10 Soal = 50 Soal)
+    function build50QuizRounds(subject, level) {
+      const roundTitles = [
+        "Ronde 1: Konsep Dasar & Pemahaman Utama",
+        "Ronde 2: Analisis Logika & Kasus Sederhana",
+        "Ronde 3: Penerapan Praktis & Pemecahan Masalah",
+        "Ronde 4: Evaluasi Kritis & Konsep Tingkat Lanjut",
+        "Ronde 5: Ujian Komprehensif & Penguasaan Modul"
+      ];
+
+      // Cari bank soal yang cocok dengan nama mapel
+      let baseBank = null;
+      for (const key in SUBJECT_QUESTION_BANK) {
+        if (subject.toLowerCase().includes(key.toLowerCase()) || key.toLowerCase().includes(subject.toLowerCase())) {
+          baseBank = SUBJECT_QUESTION_BANK[key];
+          break;
+        }
+      }
+
+      const rounds = [];
+      let questionNumber = 1;
+
+      for (let r = 0; r < 5; r++) {
+        const questions = [];
+        for (let q = 1; q <= 10; q++) {
+          if (baseBank && baseBank.length > 0) {
+            // Mengambil soal nyata dari bank soal secara berurutan/berulang
+            const sample = baseBank[(questionNumber - 1) % baseBank.length];
+            questions.push({
+              q: `[No. ${questionNumber}] ${sample.q}`,
+              opts: sample.opts,
+              ans: sample.ans,
+              exp: `[Soal ${questionNumber} - ${subject}] ${sample.exp}`
+            });
+          } else {
+            // Soal dinamis yang disesuaikan secara eksplisit dengan konteks mapel dan tingkatnya
+            const topicPrefix = `[${subject} - ${level}]`;
+            let qText = "", opts = [], correctAns = 0, expText = "";
+
+            if (questionNumber % 4 === 1) {
+              qText = `${topicPrefix} Soal No. ${questionNumber}: Manakah prinsip paling tepat dalam mempelajari materi ${subject}?`;
+              opts = [
+                `Memahami aturan dasar dan penerapan ${subject} secara bertahap`,
+                `Menghafalkan semua rumus/teori tanpa latihan`,
+                `Mengabaikan instruksi dan panduan belajar`,
+                `Hanya fokus pada bagian akhir materi`
+              ];
+              correctAns = 0;
+              expText = `Pembahasan No. ${questionNumber}: Memahami konsep dasar ${subject} secara terstruktur merupakan kunci utama penguasaan materi.`;
+            } else if (questionNumber % 4 === 2) {
+              qText = `${topicPrefix} Soal No. ${questionNumber}: Ketika menyelesaikan permasalahan dalam topik ${subject}, langkah awal yang benar adalah...`;
+              opts = [
+                `Langsung menulis jawaban acak`,
+                `Menganalisis data/informasi soal dengan cermat`,
+                `Menunggu kunci jawaban dari orang lain`,
+                `Mengabaikan petunjuk pertanyaan`
+              ];
+              correctAns = 1;
+              expText = `Pembahasan No. ${questionNumber}: Langkah awal dalam ${subject} adalah menganalisis fakta dan data yang diberikan.`;
+            } else if (questionNumber % 4 === 3) {
+              qText = `${topicPrefix} Soal No. ${questionNumber}: Manakah dari pilihan berikut yang merupakan manfaat mempelajari ${subject} di jenjang ${level}?`;
+              opts = [
+                `Menambah beban belajar harian`,
+                `Mengembangkan pola pikir kritis dan kemampuan problem solving`,
+                `Hanya untuk mendapatkan nilai ujian formal`,
+                `Tidak memiliki kaitan dengan kehidupan sehari-hari`
+              ];
+              correctAns = 1;
+              expText = `Pembahasan No. ${questionNumber}: Pembelajaran ${subject} dirancang untuk melatih logika dan pemecahan masalah praktis.`;
+            } else {
+              qText = `${topicPrefix} Soal No. ${questionNumber}: Apabila menemukan hasil latihan ${subject} yang belum memuaskan, tindakan paling efektif adalah...`;
+              opts = [
+                `Menghentikan proses belajar`,
+                `Mengevaluasi letak kesalahan dan berlatih ulang`,
+                `Menyalahkan materi yang dipelajari`,
+                `Mengabaikan hasil latihan`
+              ];
+              correctAns = 1;
+              expText = `Pembahasan No. ${questionNumber}: Evaluasi dan latihan teratur membantu memperbaiki pemahaman pada materi ${subject}.`;
+            }
+
+            questions.push({
+              q: qText,
+              opts: opts,
+              ans: correctAns,
+              exp: expText
+            });
+          }
+          questionNumber++;
+        }
+
+        rounds.push({
+          roundName: `${roundTitles[r]} (10 Soal)`,
+          questions: questions
+        });
+      }
+
+      return rounds;
+    }
+
+    function generateFullCurriculum() {
+      const subjectsSD = ['Bahasa Indonesia', 'Matematika', 'IPAS (IPA & IPS)', 'Pendidikan Pancasila'];
+      const subjectsSMP = ['Informatika', 'IPA Terpadu', 'Matematika Aljabar', 'IPS Terpadu', 'Bahasa Inggris'];
+      const subjectsSMA = ['Matematika Lanjut', 'Fisika Modern', 'Kimia Organik', 'Biologi Sel', 'Ekonomi & Akuntansi'];
+      const smkTracks = [
+        { name: 'RPL & Software', subjects: ['Pemrograman Web', 'Basis Data SQL', 'Algoritma Pemrograman'] },
+        { name: 'TKJ & Jaringan', subjects: ['Jaringan Dasar & IP', 'Keamanan Jaringan', 'MikroTik & Router'] },
+        { name: 'Bisnis Digital', subjects: ['E-Commerce Strategy', 'Digital Marketing Ads', 'SEO & Analytics'] },
+        { name: 'DKV', subjects: ['Desain Grafis UI/UX', 'Ilustrasi Digital', 'Branding & Visual'] }
+      ];
+
+      // SD (Kelas 1 - 6)
+      APP_DATA.subCategories.sd.forEach(kelas => {
+        subjectsSD.forEach(subj => {
+          APP_DATA.modules.push({
+            id: `sd-${kelas.replace(' ', '').toLowerCase()}-${subj.replace(/[^a-zA-Z]/g, '').toLowerCase()}`,
+            catId: 'sd',
+            subCat: kelas,
+            title: `${subj}: Konsep Dasar ${kelas}`,
+            desc: `Pembahasan lengkap modul kurikulum merdeka pelajaran ${subj} tingkat ${kelas} dengan 50 soal latihan bervariasi (5 ronde).`,
+            xp: 250,
+            content: `<h3>Materi Utama ${subj} - ${kelas}</h3><p>Pada modul ini siswa mempelajari fondasi utama ${subj} sesuai standar Capaian Pembelajaran Kurikulum Merdeka ${kelas}.</p>`,
+            quizRounds: build50QuizRounds(subj, kelas)
+          });
+        });
+      });
+
+      // SMP (Kelas 7 - 9)
+      APP_DATA.subCategories.smp.forEach(kelas => {
+        subjectsSMP.forEach(subj => {
+          APP_DATA.modules.push({
+            id: `smp-${kelas.replace(' ', '').toLowerCase()}-${subj.replace(/[^a-zA-Z]/g, '').toLowerCase()}`,
+            catId: 'smp',
+            subCat: kelas,
+            title: `${subj}: Analisis & Aplikasi ${kelas}`,
+            desc: `Pendalaman modul ${subj} untuk jenjang SMP ${kelas} dilengkapi 50 soal beronde yang variatif.`,
+            xp: 250,
+            content: `<h3>Poin Penting Pembelajaran ${subj} (${kelas})</h3><p>Siswa dilatih berpikir kritis melalui analisis data, studi kasus, dan pemecahan masalah ${subj}.</p>`,
+            quizRounds: build50QuizRounds(subj, kelas)
+          });
+        });
+      });
+
+      // SMA (Kelas 10 - 12)
+      APP_DATA.subCategories.sma.forEach(kelas => {
+        subjectsSMA.forEach(subj => {
+          APP_DATA.modules.push({
+            id: `sma-${kelas.replace(' ', '').toLowerCase()}-${subj.replace(/[^a-zA-Z]/g, '').toLowerCase()}`,
+            catId: 'sma',
+            subCat: kelas,
+            title: `${subj}: Pendalaman Lanjut ${kelas}`,
+            desc: `Modul persiapan olimpiade, seleksi PTN, dan penguasaan komprehensif ${subj} ${kelas} (50 Soal Kuis).`,
+            xp: 250,
+            content: `<h3>Materi Tingkat Lanjut ${subj}</h3><p>Modul ini menyiapkan siswa menghadapi ujian tingkat lanjut dan UTBK dengan studi kasus ${subj}.</p>`,
+            quizRounds: build50QuizRounds(subj, kelas)
+          });
+        });
+      });
+
+      // SMK
+      smkTracks.forEach(track => {
+        track.subjects.forEach(subj => {
+          APP_DATA.modules.push({
+            id: `smk-${track.name.replace(/[^a-zA-Z]/g, '').toLowerCase()}-${subj.replace(/[^a-zA-Z]/g, '').toLowerCase()}`,
+            catId: 'smk',
+            subCat: track.name,
+            title: `${subj} (Praktik Vokasi)`,
+            desc: `Keterampilan praktis siap kerja di bidang ${subj} industri modern dengan 50 soal latihan beronde.`,
+            xp: 250,
+            content: `<h3>Panduan Keterampilan Industri: ${subj}</h3><p>Modul berbasis praktik langsung untuk memenuhi standar kebutuhan dunia industri dan kerja.</p>`,
+            quizRounds: build50QuizRounds(subj, track.name)
+          });
+        });
+      });
+
+      // IB
+      const ibLevels = [
+        { name: 'IB PYP (Primary)', subjs: ['Inquiry Unit: How the World Works', 'PYP Mathematics & Logic'] },
+        { name: 'IB MYP (Middle)', subjs: ['MYP Integrated Sciences', 'MYP Mathematics Standard'] },
+        { name: 'IB DP (Diploma)', subjs: ['IB Physics HL', 'Theory of Knowledge (TOK)'] }
+      ];
+      ibLevels.forEach(ib => {
+        ib.subjs.forEach(subj => {
+          APP_DATA.modules.push({
+            id: `ib-${ib.name.replace(/[^a-zA-Z]/g, '').toLowerCase()}-${subj.replace(/[^a-zA-Z]/g, '').toLowerCase()}`,
+            catId: 'ib',
+            subCat: ib.name,
+            title: subj,
+            desc: `International Baccalaureate curriculum module for ${subj} with 50 practice questions across 5 rounds.`,
+            xp: 250,
+            content: `<h3>IB World Curriculum: ${subj}</h3><p>Critical thinking, global context, and inquiry-based learning principles for ${subj}.</p>`,
+            quizRounds: build50QuizRounds(subj, ib.name)
+          });
+        });
+      });
+
+      // SKILL KEHIDUPAN
+      const lifeSkills = [
+        { cat: 'Pemrograman & AI', subjs: ['Prompt Engineering Masterclass', 'Python Automation', 'Aplikasi Web AI'] },
+        { cat: 'Digital Marketing', subjs: ['SEO Optimization', 'TikTok Marketing', 'Copywriting Masterclass'] },
+        { cat: 'Keuangan & Bisnis', subjs: ['Budgeting 50/30/20', 'Investasi Pasar Modal', 'Bisnis E-Commerce'] }
+      ];
+      lifeSkills.forEach(ls => {
+        ls.subjs.forEach(subj => {
+          APP_DATA.modules.push({
+            id: `skill-${ls.cat.replace(/[^a-zA-Z]/g, '').toLowerCase()}-${subj.replace(/[^a-zA-Z]/g, '').toLowerCase()}`,
+            catId: 'skill',
+            subCat: ls.cat,
+            title: subj,
+            desc: `Keterampilan praktis pencetak income & karir masa depan: ${subj} ( Dilengkapi 50 soal tes ).`,
+            xp: 250,
+            content: `<h3>Practical Guide: ${subj}</h3><p>Pelajari langkah-langkah praktis eksekusi ${subj} langsung pada proyek nyata dunia kerja.</p>`,
+            quizRounds: build50QuizRounds(subj, ls.cat)
+          });
+        });
+      });
+    }
+
+    generateFullCurriculum();
+
+    /* ==========================================================================
+       2. STATE MANAGEMENT & GRADE RESTRICTIONS
+       ========================================================================== */
+    let currentState = {
+      studentGrade: localStorage.getItem('pk_studentGrade') || null, // 'sd', 'smp', 'sma', 'smk', 'ib', 'umum'
+      activeCategory: 'sd',
+      activeSubCat: 'Kelas 1',
+      userXP: parseInt(localStorage.getItem('pk_userXP') || '0'),
+      completedModules: JSON.parse(localStorage.getItem('pk_completedModules') || '[]'),
+      currentUser: JSON.parse(localStorage.getItem('pk_currentUser') || 'null'),
+      feedbacks: JSON.parse(localStorage.getItem('pk_feedbacks') || '[]'),
+      selectedRating: 5,
+      currentModuleId: null,
+      currentRoundIdx: 0,
+      currentQuestionIdx: 0,
+      scoreRound: 0
+    };
+
+    /* ==========================================================================
+       3. INITIALIZATION & GRADE RESTRICTION LOGIC
+       ========================================================================== */
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      
+      // Jika jenjang belum dipilih, tampilkan modal pemilihan awal
+      if (!currentState.studentGrade) {
+        openGradeModal();
+      } else {
+        applyGradeRestriction(currentState.studentGrade);
+      }
+
+      updateUserUI();
+      renderFeedbackHistory();
+      setRating(5);
+    });
+
+    function openGradeModal() {
+      document.getElementById('gradeModal').classList.remove('hidden');
+    }
+
+    function closeGradeModal() {
+      document.getElementById('gradeModal').classList.add('hidden');
+    }
+
+    function setStudentGrade(grade) {
+      currentState.studentGrade = grade;
+      localStorage.setItem('pk_studentGrade', grade);
+      closeGradeModal();
+      applyGradeRestriction(grade);
+    }
+
+    function applyGradeRestriction(grade) {
+      const noticeBox = document.getElementById('restrictionNotice');
+      const noticeText = document.getElementById('restrictionNoticeText');
+      const badgeLabel = document.getElementById('activeGradeBadgeLabel');
+
+      // Pengecualian: SMA, SMK, IB, dan UMUM Membuka Semua Akses
+      const isUnlocked = ['sma', 'smk', 'ib', 'umum'].includes(grade);
+
+      if (isUnlocked) {
+        noticeBox.classList.add('hidden');
+        badgeLabel.textContent = `Akses: Full (${grade.toUpperCase()})`;
+        // Default kategori jika baru set
+        if (!APP_DATA.categories.some(c => c.id === currentState.activeCategory)) {
+          currentState.activeCategory = 'sd';
+          currentState.activeSubCat = 'Kelas 1';
+        }
+      } else if (grade === 'sd') {
+        noticeBox.classList.remove('hidden');
+        noticeText.textContent = "Akses Anda dibatasi khusus untuk materi & kuis Sekolah Dasar (SD).";
+        badgeLabel.textContent = "Akses: SD Sahaja";
+        currentState.activeCategory = 'sd';
+        currentState.activeSubCat = APP_DATA.subCategories.sd[0];
+      } else if (grade === 'smp') {
+        // SMP sekarang mencakup SD & SMP
+        noticeBox.classList.remove('hidden');
+        noticeText.textContent = "Akses Anda dibuka untuk materi & kuis SD dan SMP.";
+        badgeLabel.textContent = "Akses: SD & SMP";
+        if (currentState.activeCategory !== 'sd' && currentState.activeCategory !== 'smp') {
+          currentState.activeCategory = 'smp';
+          currentState.activeSubCat = APP_DATA.subCategories.smp[0];
+        }
+      }
+
+      updateWelcomeBanner();
+      renderCategoryTabs();
+      renderSubCategoryTabs();
+      renderModules();
+    }
+
+    function updateWelcomeBanner() {
+      const heading = document.getElementById('welcomeHeading');
+      const subtext = document.getElementById('welcomeSubtext');
+      const name = currentState.currentUser ? currentState.currentUser.name : 'Siswa';
+
+      if (currentState.studentGrade === 'sd') {
+        heading.textContent = `Selamat Datang, ${name}! Siap Belajar SD?`;
+        subtext.textContent = "Akses jenjang SD diaktifkan. Ayo selesaikan modul dan 50 soal kuis beronde untuk menumbuhkan pohon keterampilanmu!";
+      } else if (currentState.studentGrade === 'smp') {
+        heading.textContent = `Selamat Datang, ${name}! Semangat Belajar SD & SMP!`;
+        subtext.textContent = "Akses jenjang SD dan SMP diaktifkan. Kamu dapat mengakses seluruh materi SD serta SMP dengan 50 soal kuis interaktif!";
+      } else {
+        heading.textContent = `Selamat Datang, ${name}! Akses Penuh Aktif!`;
+        subtext.textContent = "Kamu memiliki akses terbuka ke seluruh materi SD, SMP, SMA, SMK, IB World, serta Skill Kehidupan & Bisnis masa depan!";
+      }
+    }
+
+    function updateUserUI() {
+      document.getElementById('userXP').textContent = `${currentState.userXP} XP`;
+      
+      let levelNum = 1;
+      let levelTitle = "Pemula";
+      if (currentState.userXP >= 1000) { levelNum = 4; levelTitle = "Master Skill"; }
+      else if (currentState.userXP >= 500) { levelNum = 3; levelTitle = "Mahir"; }
+      else if (currentState.userXP >= 200) { levelNum = 2; levelTitle = "Cendekia"; }
+
+      document.getElementById('userLevelBadge').textContent = `${levelNum} ${levelTitle}`;
+
+      const authContainer = document.getElementById('userAuthSection');
+      if (currentState.currentUser) {
+        authContainer.innerHTML = `
+          <div class="flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200 text-xs font-bold text-emerald-800">
+            <i data-lucide="user-check" class="w-4 h-4 text-emerald-600"></i>
+            <span>${currentState.currentUser.name}</span>
+            <button onclick="handleLogout()" title="Keluar Akun" class="ml-1 text-slate-400 hover:text-rose-600 transition">
+              <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        `;
+      } else {
+        authContainer.innerHTML = `
+          <button onclick="openAuthModal()" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full text-xs font-bold transition">
+            <i data-lucide="log-in" class="w-4 h-4 text-emerald-600"></i>
+            <span>Masuk / Daftar</span>
+          </button>
+        `;
+      }
+
+      localStorage.setItem('pk_userXP', currentState.userXP);
+      localStorage.setItem('pk_completedModules', JSON.stringify(currentState.completedModules));
+      localStorage.setItem('pk_currentUser', JSON.stringify(currentState.currentUser));
+      localStorage.setItem('pk_feedbacks', JSON.stringify(currentState.feedbacks));
+      lucide.createIcons();
+    }
+
+    // Modal About Handlers
+    function openAboutModal() {
+      document.getElementById('aboutModal').classList.remove('hidden');
+    }
+
+    function closeAboutModal() {
+      document.getElementById('aboutModal').classList.add('hidden');
+    }
+
+    // Modal Auth Handlers
+    function openAuthModal() {
+      document.getElementById('authModal').classList.remove('hidden');
+    }
+
+    function closeAuthModal() {
+      document.getElementById('authModal').classList.add('hidden');
+    }
+
+    function switchAuthTab(tab) {
+      const loginForm = document.getElementById('formLogin');
+      const regForm = document.getElementById('formRegister');
+      const tabLogin = document.getElementById('tabAuthLogin');
+      const tabReg = document.getElementById('tabAuthRegister');
+
+      if (tab === 'login') {
+        loginForm.classList.remove('hidden');
+        regForm.classList.add('hidden');
+        tabLogin.className = "flex-1 pb-3 text-emerald-600 border-b-2 border-emerald-600";
+        tabReg.className = "flex-1 pb-3 text-slate-400 border-b-2 border-transparent hover:text-slate-600";
+      } else {
+        loginForm.classList.add('hidden');
+        regForm.classList.remove('hidden');
+        tabReg.className = "flex-1 pb-3 text-emerald-600 border-b-2 border-emerald-600";
+        tabLogin.className = "flex-1 pb-3 text-slate-400 border-b-2 border-transparent hover:text-slate-600";
+      }
+    }
+
+    function handleLoginSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const name = email.split('@')[0];
+
+      currentState.currentUser = {
+        name: name.charAt(0).toUpperCase() + name.slice(1),
+        email: email,
+        school: 'Umum'
+      };
+
+      updateUserUI();
+      updateWelcomeBanner();
+      closeAuthModal();
+      alert(`Selamat datang kembali, ${currentState.currentUser.name}!`);
+    }
+
+    function handleRegisterSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('regName').value;
+      const email = document.getElementById('regEmail').value;
+      const school = document.getElementById('regSchool').value || 'Umum';
+
+      currentState.currentUser = { name, email, school };
+
+      updateUserUI();
+      updateWelcomeBanner();
+      closeAuthModal();
+      alert(`Akun berhasil dibuat! Selamat belajar, ${name}.`);
+    }
+
+    function handleLogout() {
+      if (confirm("Apakah kamu yakin ingin keluar dari akun?")) {
+        currentState.currentUser = null;
+        updateUserUI();
+        updateWelcomeBanner();
+      }
+    }
+
+    /* ==========================================================================
+       4. FEEDBACK SYSTEM LOGIC
+       ========================================================================== */
+    function openFeedbackModal() {
+      if (currentState.currentUser) {
+        document.getElementById('fbName').value = currentState.currentUser.name;
+      }
+      document.getElementById('feedbackModal').classList.remove('hidden');
+    }
+
+    function closeFeedbackModal() {
+      document.getElementById('feedbackModal').classList.add('hidden');
+    }
+
+    function setRating(rating) {
+      currentState.selectedRating = rating;
+      const stars = document.querySelectorAll('#ratingStarContainer .star-btn');
+      stars.forEach((btn, idx) => {
+        if (idx < rating) {
+          btn.innerHTML = `<i data-lucide="star" class="w-6 h-6 text-amber-400 fill-amber-400"></i>`;
+        } else {
+          btn.innerHTML = `<i data-lucide="star" class="w-6 h-6 text-slate-300"></i>`;
+        }
+      });
+      lucide.createIcons();
+    }
+
+    function handleFeedbackSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('fbName').value;
+      const category = document.getElementById('fbCategory').value;
+      const message = document.getElementById('fbMessage').value;
+
+      const newFb = {
+        id: Date.now(),
+        name,
+        category,
+        message,
+        rating: currentState.selectedRating,
+        date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+      };
+
+      currentState.feedbacks.unshift(newFb);
+      updateUserUI();
+      renderFeedbackHistory();
+      closeFeedbackModal();
+      document.getElementById('fbMessage').value = '';
+
+      alert("Terima kasih! Saran & Pesan kamu telah berhasil dikirim.");
+    }
+
+    function renderFeedbackHistory() {
+      const container = document.getElementById('feedbackHistoryList');
+      if (!currentState.feedbacks || currentState.feedbacks.length === 0) {
+        container.innerHTML = `
+          <p class="text-xs text-slate-400 text-center py-4">Belum ada saran terkirim. Jadilah yang pertama memberikan masukan!</p>
+        `;
+        return;
+      }
+
+      container.innerHTML = currentState.feedbacks.slice(0, 3).map(item => `
+        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 text-xs space-y-1.5 font-sans">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-800">${item.name}</span>
+            <div class="flex items-center text-amber-400">
+              ${'★'.repeat(item.rating)}${'☆'.repeat(5 - item.rating)}
+            </div>
+          </div>
+          <p class="text-slate-600 leading-relaxed">${item.message}</p>
+          <div class="flex items-center justify-between text-[10px] text-slate-400 font-semibold pt-1">
+            <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">${item.category}</span>
+            <span>${item.date}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* ==========================================================================
+       5. NAVIGATION & RENDER FUNCTIONS WITH RESTRICTION FILTER
+       ========================================================================== */
+    function switchView(viewName) {
+      document.getElementById('viewDashboard').classList.add('hidden');
+      document.getElementById('viewMaterial').classList.add('hidden');
+      document.getElementById('viewQuiz').classList.add('hidden');
+      document.getElementById('viewSummary').classList.add('hidden');
+
+      if (viewName === 'dashboard') {
+        document.getElementById('viewDashboard').classList.remove('hidden');
+        renderModules();
+      } else if (viewName === 'material') {
+        document.getElementById('viewMaterial').classList.remove('hidden');
+      } else if (viewName === 'quiz') {
+        document.getElementById('viewQuiz').classList.remove('hidden');
+      } else if (viewName === 'summary') {
+        document.getElementById('viewSummary').classList.remove('hidden');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderCategoryTabs() {
+      const container = document.getElementById('categoryTabContainer');
+      const isRestrictedSD = currentState.studentGrade === 'sd';
+      const isRestrictedSMP = currentState.studentGrade === 'smp';
+
+      container.innerHTML = APP_DATA.categories.map(cat => {
+        // Filter tabs berdasarkan pembatasan jenjang
+        if (isRestrictedSD && cat.id !== 'sd') return '';
+        // Untuk SMP, tampilkan jenjang SD dan SMP
+        if (isRestrictedSMP && cat.id !== 'sd' && cat.id !== 'smp') return '';
+
+        const isActive = cat.id === currentState.activeCategory;
+        const activeClass = isActive 
+          ? (cat.isHighlight ? 'bg-amber-500 text-white shadow-md' : 'bg-emerald-600 text-white shadow-md shadow-emerald-200')
+          : 'bg-slate-100 text-slate-600 hover:bg-slate-200';
+
+        return `
+          <button onclick="selectCategory('${cat.id}')" class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 font-sans ${activeClass}">
+            <i data-lucide="${cat.icon}" class="w-4 h-4"></i>
+            <span>${cat.name}</span>
+          </button>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function selectCategory(catId) {
+      currentState.activeCategory = catId;
+      currentState.activeSubCat = APP_DATA.subCategories[catId][0];
+      renderCategoryTabs();
+      renderSubCategoryTabs();
+      renderModules();
+    }
+
+    function renderSubCategoryTabs() {
+      const container = document.getElementById('subCategoryTabContainer');
+      const subCats = APP_DATA.subCategories[currentState.activeCategory] || [];
+
+      container.innerHTML = subCats.map(sub => {
+        const isActive = sub === currentState.activeSubCat;
+        const activeClass = isActive 
+          ? 'bg-emerald-100 text-emerald-800 font-extrabold border-emerald-300' 
+          : 'bg-slate-50 text-slate-500 hover:bg-slate-100 border-slate-200';
+
+        return `
+          <button onclick="selectSubCategory('${sub}')" class="px-3 py-1.5 rounded-lg border text-xs transition font-sans ${activeClass}">
+            ${sub}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectSubCategory(subCat) {
+      currentState.activeSubCat = subCat;
+      renderSubCategoryTabs();
+      renderModules();
+    }
+
+    function renderModules() {
+      const container = document.getElementById('moduleGrid');
+      const searchVal = document.getElementById('searchInput').value.toLowerCase();
+
+      const activeCatObj = APP_DATA.categories.find(c => c.id === currentState.activeCategory);
+      document.getElementById('sectionTitle').textContent = `${activeCatObj.name} - ${currentState.activeSubCat}`;
+
+      const filtered = APP_DATA.modules.filter(m => {
+        const matchesCat = m.catId === currentState.activeCategory && m.subCat === currentState.activeSubCat;
+        const matchesSearch = m.title.toLowerCase().includes(searchVal) || m.desc.toLowerCase().includes(searchVal);
+        return searchVal ? matchesSearch : matchesCat;
+      });
+
+      const completedInCat = filtered.filter(m => currentState.completedModules.includes(m.id)).length;
+      const progressPct = filtered.length > 0 ? Math.round((completedInCat / filtered.length) * 100) : 0;
+      document.getElementById('levelProgressBar').style.width = `${progressPct}%`;
+      document.getElementById('levelProgressText').textContent = `${progressPct}% (${completedInCat}/${filtered.length})`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full text-center py-12 bg-white rounded-2xl border border-slate-200 space-y-2">
+            <i data-lucide="book-open-check" class="w-12 h-12 mx-auto text-slate-300"></i>
+            <p class="text-sm font-bold text-slate-600">Belum ada modul untuk pencarian ini.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      container.innerHTML = filtered.map(mod => {
+        const isCompleted = currentState.completedModules.includes(mod.id);
+        
+        return `
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 hover:shadow-lg transition-all duration-200 flex flex-col justify-between space-y-4 group">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-extrabold rounded-md uppercase tracking-wider">
+                  ${mod.subCat}
+                </span>
+                <span class="text-xs font-bold text-amber-600 flex items-center gap-1">
+                  <i data-lucide="zap" class="w-3.5 h-3.5 fill-amber-500"></i> +${mod.xp} XP
+                </span>
+              </div>
+              <h4 class="font-bold text-slate-900 group-hover:text-emerald-600 transition leading-snug">
+                ${mod.title}
+              </h4>
+              <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                ${mod.desc}
+              </p>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-xs font-medium text-slate-400">
+                ${mod.quizRounds ? mod.quizRounds.length : 5} Ronde (50 Soal)
+              </span>
+              <button onclick="openMaterial('${mod.id}')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-sm shadow-emerald-200">
+                <span>${isCompleted ? 'Pelajari Lagi' : 'Buka Modul'}</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    function handleSearch() {
+      renderModules();
+    }
+
+    function openMaterial(modId) {
+      const mod = APP_DATA.modules.find(m => m.id === modId);
+      if (!mod) return;
+
+      currentState.currentModuleId = modId;
+      document.getElementById('matCategoryBadge').textContent = `${mod.catId.toUpperCase()} - ${mod.subCat}`;
+      document.getElementById('matXPBadge').innerHTML = `<i data-lucide="zap" class="w-3.5 h-3.5 fill-amber-500"></i> +${mod.xp} XP`;
+      document.getElementById('matTitle').textContent = mod.title;
+      document.getElementById('matDesc').textContent = mod.desc;
+      document.getElementById('matBody').innerHTML = mod.content;
+
+      switchView('material');
+      lucide.createIcons();
+    }
+
+    function startQuizForCurrentModule() {
+      const mod = APP_DATA.modules.find(m => m.id === currentState.currentModuleId);
+      if (!mod || !mod.quizRounds || mod.quizRounds.length === 0) return;
+
+      currentState.currentRoundIdx = 0;
+      startRound(0);
+    }
+
+    function startRound(roundIdx) {
+      const mod = APP_DATA.modules.find(m => m.id === currentState.currentModuleId);
+      const round = mod.quizRounds[roundIdx];
+
+      currentState.currentQuestionIdx = 0;
+      currentState.scoreRound = 0;
+
+      switchView('quiz');
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const mod = APP_DATA.modules.find(m => m.id === currentState.currentModuleId);
+      const round = mod.quizRounds[currentState.currentRoundIdx];
+      const q = round.questions[currentState.currentQuestionIdx];
+
+      document.getElementById('quizRoundBadge').textContent = round.roundName || `Ronde ${currentState.currentRoundIdx + 1}`;
+      document.getElementById('quizQuestionCount').textContent = `Soal ${currentState.currentQuestionIdx + 1} dari ${round.questions.length}`;
+      document.getElementById('quizCategoryLabel').textContent = `${mod.subCat} - ${mod.title}`;
+      document.getElementById('quizQuestionText').textContent = q.q;
+
+      document.getElementById('quizFeedbackBox').classList.add('hidden');
+
+      const nextBtn = document.getElementById('quizNextBtn');
+      nextBtn.disabled = true;
+      nextBtn.className = "w-full sm:w-auto px-6 py-3 bg-slate-200 text-slate-400 cursor-not-allowed font-bold text-sm rounded-xl flex items-center justify-center gap-2 transition";
+
+      const optionsContainer = document.getElementById('quizOptionsContainer');
+      optionsContainer.innerHTML = q.opts.map((opt, idx) => {
+        return `
+          <button onclick="selectAnswer(${idx})" class="quiz-opt-btn w-full p-4 rounded-xl border border-slate-200 text-left font-semibold text-sm hover:border-emerald-500 hover:bg-emerald-50/50 transition flex items-center justify-between group" data-idx="${idx}">
+            <div class="flex items-center gap-3">
+              <span class="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-emerald-600 group-hover:text-white flex items-center justify-center text-xs font-bold text-slate-600 transition">
+                ${String.fromCharCode(65 + idx)}
+              </span>
+              <span class="text-slate-800">${opt}</span>
+            </div>
+            <i data-lucide="circle" class="w-5 h-5 text-slate-300 group-hover:text-emerald-500 transition"></i>
+          </button>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    function selectAnswer(selectedIdx) {
+      const mod = APP_DATA.modules.find(m => m.id === currentState.currentModuleId);
+      const round = mod.quizRounds[currentState.currentRoundIdx];
+      const q = round.questions[currentState.currentQuestionIdx];
+
+      const buttons = document.querySelectorAll('.quiz-opt-btn');
+      buttons.forEach(btn => btn.disabled = true);
+
+      const isCorrect = selectedIdx === q.ans;
+      if (isCorrect) currentState.scoreRound++;
+
+      buttons.forEach((btn, idx) => {
+        if (idx === q.ans) {
+          btn.className = "w-full p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 font-bold text-sm text-emerald-900 flex items-center justify-between";
+        } else if (idx === selectedIdx && !isCorrect) {
+          btn.className = "w-full p-4 rounded-xl border-2 border-rose-500 bg-rose-50 font-bold text-sm text-rose-900 flex items-center justify-between";
+        }
+      });
+
+      const feedbackBox = document.getElementById('quizFeedbackBox');
+      const feedbackHeader = document.getElementById('quizFeedbackHeader');
+      const explanationText = document.getElementById('quizExplanationText');
+
+      feedbackBox.classList.remove('hidden');
+      if (isCorrect) {
+        feedbackBox.className = "p-4 rounded-2xl border border-emerald-200 bg-emerald-50 text-emerald-900 space-y-1";
+        feedbackHeader.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600"></i> Jawaban Benar!`;
+      } else {
+        feedbackBox.className = "p-4 rounded-2xl border border-rose-200 bg-rose-50 text-rose-900 space-y-1";
+        feedbackHeader.innerHTML = `<i data-lucide="x-circle" class="w-5 h-5 text-rose-600"></i> Jawaban Kurang Tepat`;
+      }
+      explanationText.textContent = q.exp;
+
+      const nextBtn = document.getElementById('quizNextBtn');
+      nextBtn.disabled = false;
+      nextBtn.className = "w-full sm:w-auto px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2 transition shadow-md shadow-emerald-200";
+
+      lucide.createIcons();
+    }
+
+    function handleQuizNext() {
+      const mod = APP_DATA.modules.find(m => m.id === currentState.currentModuleId);
+      const round = mod.quizRounds[currentState.currentRoundIdx];
+
+      if (currentState.currentQuestionIdx < round.questions.length - 1) {
+        currentState.currentQuestionIdx++;
+        renderQuestion();
+      } else {
+        showRoundSummary();
+      }
+    }
+
+    function showRoundSummary() {
+      const mod = APP_DATA.modules.find(m => m.id === currentState.currentModuleId);
+      const round = mod.quizRounds[currentState.currentRoundIdx];
+      const totalQ = round.questions.length;
+      const pct = Math.round((currentState.scoreRound / totalQ) * 100);
+
+      const xpGained = Math.round((pct / 100) * (mod.xp / mod.quizRounds.length));
+      currentState.userXP += xpGained;
+
+      if (!currentState.completedModules.includes(mod.id)) {
+        currentState.completedModules.push(mod.id);
+      }
+
+      updateUserUI();
+
+      document.getElementById('summaryScore').textContent = `${pct}%`;
+      document.getElementById('summaryXPGained').textContent = `+${xpGained} XP`;
+
+      const nextBtn = document.getElementById('nextRoundBtn');
+      if (currentState.currentRoundIdx < mod.quizRounds.length - 1) {
+        nextBtn.innerHTML = `<span>Lanjut Ronde ${currentState.currentRoundIdx + 2}</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+      } else {
+        nextBtn.innerHTML = `<span>Selesai Seluruh Ronde</span> <i data-lucide="check" class="w-4 h-4"></i>`;
+      }
+
+      switchView('summary');
+      lucide.createIcons();
+    }
+
+    function startNextRoundOrFinish() {
+      const mod = APP_DATA.modules.find(m => m.id === currentState.currentModuleId);
+      if (currentState.currentRoundIdx < mod.quizRounds.length - 1) {
+        currentState.currentRoundIdx++;
+        startRound(currentState.currentRoundIdx);
+      } else {
+        switchView('dashboard');
+      }
+    }
+
+    function confirmExitQuiz() {
+      if (confirm("Keluar dari kuis ini? Progres ronde saat ini tidak akan disimpan.")) {
+        switchView('dashboard');
+      }
+    }
+
+    function resetProgress() {
+      if (confirm("Apakah Anda yakin ingin meriset seluruh progres XP, jenjang, dan kuis?")) {
+        localStorage.clear();
+        currentState.userXP = 0;
+        currentState.completedModules = [];
+        currentState.currentUser = null;
+        currentState.feedbacks = [];
+        currentState.studentGrade = null;
+        updateUserUI();
+        openGradeModal();
+        alert("Progres telah diriset kembali ke awal.");
+      }
+    }
+  </script>
+</body>
+</html>
